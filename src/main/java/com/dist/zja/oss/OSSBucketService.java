@@ -62,7 +62,7 @@ public class OSSBucketService {
     public void init() {
         if (!StringUtils.isEmpty(defaultBucket)) {
             makeBucket();
-            logger.info("defaultBucket: {}" + defaultBucket);
+            logger.info("defaultBucket: " + defaultBucket);
         }
 
         logger.info("com.dist.zja.oss.OSSBucketService  Init Success！");
@@ -204,33 +204,42 @@ public class OSSBucketService {
     }
 
     @MethodComment(
-            function = "默认桶-删除存储桶加密",
-            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
-    public boolean deleteBucketEncryption() {
-        validateBucketName(defaultBucket);
-        return deleteBucketEncryption(defaultBucket);
+            function = "指定桶-删除桶中所有对象",
+            params = {
+                    @Param(name = "bucketName", description = "桶名")
+            })
+    public boolean deleteBucketObjects(String bucketName) throws Exception {
+        Iterable<Result<Item>> myObjects = listObjects(bucketName);
+        for (Result<Item> result : myObjects) {
+            Item item = result.get();
+            if (item.size() > 0) {
+                //删除桶中所有对象
+                ossClient.removeObject(RemoveObjectArgs.builder().bucket(bucketName).object(item.objectName()).build());
+            }
+        }
+        return true;
     }
 
     @MethodComment(
-            function = "指定桶-删除存储桶加密",
+            function = "指定桶-删除桶",
             params = {
                     @Param(name = "bucketName", description = "桶名")
-            }, description = "删除桶中所有对象后再删除桶")
-    public boolean deleteBucketEncryption(String bucketName) {
-        try {
-            ossClient.deleteBucketEncryption(
-                    DeleteBucketEncryptionArgs.builder().bucket(bucketName).build());
-            return true;
-        } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            })
+    public boolean deleteBucket(String bucketName) throws Exception {
+        boolean flag = bucketExists(bucketName);
+        if (!flag) {
             return false;
         }
+        //删除桶中所有对象
+        deleteBucketObjects(bucketName);
+        //删除存储桶，注意，只有存储桶为空时才能删除成功。
+        ossClient.removeBucket(RemoveBucketArgs.builder().bucket(bucketName).build());
+        return true;
     }
 
     @MethodComment(
             function = "默认桶-删除桶", description = "只能删除空桶")
     public boolean deleteNullBucket() throws Exception {
-        validateBucketName(defaultBucket);
         return deleteNullBucket(defaultBucket);
     }
 
@@ -264,7 +273,6 @@ public class OSSBucketService {
             function = "默认桶-获取桶策略",
             description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
     public String getBucketPolicy() throws Exception {
-        validateBucketName(defaultBucket);
         return getBucketPolicy(defaultBucket);
     }
 
@@ -286,7 +294,6 @@ public class OSSBucketService {
                     @Param(name = "BucetPolicyEnum", description = "策略枚举")
             })
     public void setBucketPolicy(BucetPolicyEnum policy) throws Exception {
-        validateBucketName(defaultBucket);
         setBucketPolicy(defaultBucket, policy);
     }
 
@@ -306,7 +313,10 @@ public class OSSBucketService {
                     @Param(name = "bucketName", description = "桶名称)")
             })
     public ObjectLockConfiguration getObjectLockConfiguration(String bucketName) throws Exception {
-        return ossClient.getObjectLockConfiguration(GetObjectLockConfigurationArgs.builder().bucket(bucketName).build());
+        return ossClient.getObjectLockConfiguration(
+                GetObjectLockConfigurationArgs.builder()
+                .bucket(bucketName)
+                .build());
     }
 
     @MethodComment(
@@ -315,8 +325,10 @@ public class OSSBucketService {
                     @Param(name = "bucketName", description = "桶名")
             })
     public void deleteBucketPolicy() throws Exception {
-        validateBucketName(defaultBucket);
-        ossClient.deleteBucketPolicy(DeleteBucketPolicyArgs.builder().bucket(defaultBucket).build());
+        ossClient.deleteBucketPolicy(
+                DeleteBucketPolicyArgs.builder()
+                .bucket(defaultBucket)
+                .build());
     }
 
     @MethodComment(
@@ -325,7 +337,36 @@ public class OSSBucketService {
                     @Param(name = "bucketName", description = "桶名")
             })
     public void deleteBucketPolicy(String bucketName) throws Exception {
-        ossClient.deleteBucketPolicy(DeleteBucketPolicyArgs.builder().bucket(bucketName).build());
+        ossClient.deleteBucketPolicy(
+                DeleteBucketPolicyArgs.builder().
+                        bucket(bucketName)
+                        .build());
+    }
+
+    @MethodComment(
+            function = "默认桶-删除存储桶加密",
+            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
+    public boolean deleteBucketEncryption() {
+        return deleteBucketEncryption(defaultBucket);
+    }
+
+    @MethodComment(
+            function = "指定桶-删除存储桶加密",
+            params = {
+                    @Param(name = "bucketName", description = "桶名")
+            }, description = "删除桶中所有对象后再删除桶")
+    public boolean deleteBucketEncryption(String bucketName) {
+        try {
+            ossClient.deleteBucketEncryption(
+                    DeleteBucketEncryptionArgs
+                            .builder()
+                            .bucket(bucketName)
+                            .build());
+            return true;
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     /**

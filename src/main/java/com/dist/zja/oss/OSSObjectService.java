@@ -630,7 +630,7 @@ public class OSSObjectService {
             function = "默认桶-组合源对象列表",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
-            }, description = "通过使用服务器端副本组合来自不同源对象的数据来创建对象，服务器上已存在的对象列表再次组合成一个对象")
+            }, description = "服务器上已存在的对象列表再次组合成一个对象,每个对象size必须大于5242880=5MB")
     public ObjectWriteResponse composeObject(String objectName, List<ComposeSource> sourceObjectList) throws Exception {
         return composeObject(defaultBucket, objectName, sourceObjectList);
     }
@@ -639,7 +639,7 @@ public class OSSObjectService {
             function = "指定桶-组合源对象列表",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
-            }, description = "通过使用服务器端副本组合来自不同源对象的数据来创建对象，服务器上已存在的对象列表再次组合成一个对象")
+            }, description = "通过使用服务器端副本组合来自不同源对象的数据来创建对象，服务器上已存在的对象列表再次组合成一个对象,每个对象size必须大于5242880=5MB")
     public ObjectWriteResponse composeObject(String bucketName, String objectName, List<ComposeSource> sourceObjectList) throws Exception {
         return ossClient.composeObject(
                 ComposeObjectArgs.builder()
@@ -744,7 +744,7 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "默认桶-删除对象-单个",
+            function = "默认桶-删除单个对象-单个",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
             })
@@ -753,7 +753,7 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "指定桶-删除对象-单个",
+            function = "指定桶-删除单个对象-单个",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
@@ -767,7 +767,7 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "默认桶-删除对象-多个",
+            function = "默认桶-批量删除对象-多个",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
             })
@@ -776,11 +776,11 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "指定桶-删除对象-多个",
+            function = "指定桶-批量删除对象-多个",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
-            })
+            },description = "无法删除目录类型的对象")
     public void deleteObjects(String bucketName, List<DeleteObject> objectNames) throws Exception {
         for (Result<DeleteError> errorResult : ossClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectNames).build())) {
             DeleteError deleteError = errorResult.get();
