@@ -82,21 +82,21 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "默认桶-对象上传-本地对象路径",
+            function = "默认桶-文件夹上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
                     @Param(name = "folderPath", description = "本地文件夹路径")
-            })
+            },description = "空目录过滤不会上传，文件夹中空文件可以上传")
     public void uploadObjectFolder(String objectName, String folderPath) throws Exception {
         uploadObjectFolder(defaultBucket, objectName, folderPath);
     }
 
     @MethodComment(
-            function = "默认桶-对象上传-本地对象路径",
+            function = "默认桶-文件夹上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
                     @Param(name = "folderPath", description = "本地文件夹路径")
-            })
+            },description = "空目录过滤不会上传，文件夹中空文件可以上传")
     public void uploadObjectFolder(String bucketName, String objectName, String folderPath) throws Exception {
         if (Files.isDirectory(Paths.get(folderPath))) {
             File dir = new File(folderPath);
@@ -108,7 +108,7 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "默认桶-对象上传-本地对象路径",
+            function = "默认桶-单文件上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
                     @Param(name = "filePath", description = "本地文件路径")
@@ -118,7 +118,7 @@ public class OSSObjectService {
     }
 
     @MethodComment(
-            function = "指定桶-对象上传-本地对象路径",
+            function = "指定桶-单文件上传-本地对象路径",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象id(存储名称)"),
