@@ -103,7 +103,7 @@ public class OSSBucketService {
      */
     private void validateNotNull(Object arg, String argName) {
         if (arg == null) {
-            throw new IllegalArgumentException(argName + " must not be null,Must be configured dist.minio.config.default-bucket=");
+            throw new IllegalArgumentException(argName + " must not be null,Must be configured dist.oss.config.default-bucket=");
         }
     }
 
@@ -120,7 +120,7 @@ public class OSSBucketService {
 
     @MethodComment(
             function = "默认桶-创建新的桶",
-            description = "使用默认桶 defaultBucket，必须配置 dist.minio.config.default-bucket= ")
+            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
     private boolean makeBucket() {
         validateBucketName(defaultBucket);
         return makeBucket(defaultBucket);
@@ -184,7 +184,7 @@ public class OSSBucketService {
 
     @MethodComment(
             function = "默认桶-桶中的对象列表",
-            description = "使用默认桶 defaultBucket，必须配置 dist.minio.config.default-bucket= ")
+            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
     public Iterable<Result<Item>> listObjects() throws Exception {
         validateBucketName(defaultBucket);
         return listObjects(defaultBucket);
@@ -205,7 +205,7 @@ public class OSSBucketService {
 
     @MethodComment(
             function = "默认桶-删除存储桶加密",
-            description = "使用默认桶 defaultBucket，必须配置 dist.minio.config.default-bucket= ")
+            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
     public boolean deleteBucketEncryption() {
         validateBucketName(defaultBucket);
         return deleteBucketEncryption(defaultBucket);
@@ -262,7 +262,7 @@ public class OSSBucketService {
 
     @MethodComment(
             function = "默认桶-获取桶策略",
-            description = "使用默认桶 defaultBucket，必须配置 dist.minio.config.default-bucket= ")
+            description = "使用默认桶 defaultBucket，必须配置 dist.oss.config.default-bucket= ")
     public String getBucketPolicy() throws Exception {
         validateBucketName(defaultBucket);
         return getBucketPolicy(defaultBucket);

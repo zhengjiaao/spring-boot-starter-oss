@@ -58,16 +58,16 @@ import java.util.concurrent.TimeUnit;
  * Version 4; else they are performed anonymously.
  *
  * <p>Examples on using this library are available <a
- * href="https://github.com/minio/minio-java/tree/master/src/test/java/io/minio/examples">here</a>.
+ * href="https://github.com/oss/oss-java/tree/master/src/test/java/io/oss/examples">here</a>.
  *
  * <p>Use {@code OSSClientBuilder.builder()} to create S3 client.
  *
  * <pre>{@code
  * // Create client with anonymous access.
- * OSSClientBuilder minioClient = OSSClientBuilder.builder().endpoint("https://play.min.io").build();
+ * OSSClientBuilder ossClient = OSSClientBuilder.builder().endpoint("https://play.min.io").build();
  *
  * // Create client with credentials.
- * OSSClientBuilder minioClient =
+ * OSSClientBuilder ossClient =
  *     OSSClientBuilder.builder()
  *         .endpoint("https://play.min.io")
  *         .credentials("Q3AM3UQ867SPQQA43P2F", "zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG")
@@ -106,12 +106,12 @@ public class OSSClient extends S3Base {
      * <pre>Example:{@code
      * // Get information of an object.
      * StatObjectResponse stat =
-     *     minioClient.statObject(
+     *     ossClient.statObject(
      *         StatObjectArgs.builder().bucket("my-bucketname").object("my-objectname").build());
      *
      * // Get information of SSE-C encrypted object.
      * StatObjectResponse stat =
-     *     minioClient.statObject(
+     *     ossClient.statObject(
      *         StatObjectArgs.builder()
      *             .bucket("my-bucketname")
      *             .object("my-objectname")
@@ -120,7 +120,7 @@ public class OSSClient extends S3Base {
      *
      * // Get information of a versioned object.
      * StatObjectResponse stat =
-     *     minioClient.statObject(
+     *     ossClient.statObject(
      *         StatObjectArgs.builder()
      *             .bucket("my-bucketname")
      *             .object("my-objectname")
@@ -129,7 +129,7 @@ public class OSSClient extends S3Base {
      *
      * // Get information of a SSE-C encrypted versioned object.
      * StatObjectResponse stat =
-     *     minioClient.statObject(
+     *     ossClient.statObject(
      *         StatObjectArgs.builder()
      *             .bucket("my-bucketname")
      *             .object("my-objectname")
@@ -164,7 +164,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * try (InputStream stream =
-     *     minioClient.getObject(
+     *     ossClient.getObject(
      *   GetObjectArgs.builder()
      *     .bucket("my-bucketname")
      *     .object("my-objectname")
@@ -211,7 +211,7 @@ public class OSSClient extends S3Base {
      * Downloads data of a SSE-C encrypted object to file.
      *
      * <pre>Example:{@code
-     * minioClient.downloadObject(
+     * ossClient.downloadObject(
      *   GetObjectArgs.builder()
      *     .bucket("my-bucketname")
      *     .object("my-objectname")
@@ -241,7 +241,7 @@ public class OSSClient extends S3Base {
 
         StatObjectResponse stat = statObject(new StatObjectArgs(args));
 
-        String tempFilename = filename + "." + stat.etag() + ".part.minio";
+        String tempFilename = filename + "." + stat.etag() + ".part.oss";
         Path tempFilePath = Paths.get(tempFilename);
         boolean tempFileExists = Files.exists(tempFilePath);
 
@@ -317,7 +317,7 @@ public class OSSClient extends S3Base {
      * <pre>Example:{@code
      * // Create object "my-objectname" in bucket "my-bucketname" by copying from object
      * // "my-objectname" in bucket "my-source-bucketname".
-     * minioClient.copyObject(
+     * ossClient.copyObject(
      *     CopyObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -326,7 +326,7 @@ public class OSSClient extends S3Base {
      *
      * // Create object "my-objectname" in bucket "my-bucketname" by copying from object
      * // "my-source-objectname" in bucket "my-source-bucketname".
-     * minioClient.copyObject(
+     * ossClient.copyObject(
      *     CopyObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -336,7 +336,7 @@ public class OSSClient extends S3Base {
      *
      * // Create object "my-objectname" in bucket "my-bucketname" with server-side encryption by
      * // copying from object "my-objectname" in bucket "my-source-bucketname".
-     * minioClient.copyObject(
+     * ossClient.copyObject(
      *     CopyObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -346,7 +346,7 @@ public class OSSClient extends S3Base {
      *
      * // Create object "my-objectname" in bucket "my-bucketname" by copying from SSE-C encrypted
      * // object "my-source-objectname" in bucket "my-source-bucketname".
-     * minioClient.copyObject(
+     * ossClient.copyObject(
      *     CopyObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -357,7 +357,7 @@ public class OSSClient extends S3Base {
      *
      * // Create object "my-objectname" in bucket "my-bucketname" with custom headers by copying from
      * // object "my-objectname" in bucket "my-source-bucketname" using conditions.
-     * minioClient.copyObject(
+     * ossClient.copyObject(
      *     CopyObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -444,7 +444,7 @@ public class OSSClient extends S3Base {
      *    ComposeSource.builder().bucket("my-job-bucket").object("my-objectname-part-three").build());
      *
      * // Create my-bucketname/my-objectname by combining source object list.
-     * minioClient.composeObject(
+     * ossClient.composeObject(
      *    ComposeObjectArgs.builder()
      *        .bucket("my-bucketname")
      *        .object("my-objectname")
@@ -455,7 +455,7 @@ public class OSSClient extends S3Base {
      * // list.
      * Map<String, String> userMetadata = new HashMap<>();
      * userMetadata.put("My-Project", "Project One");
-     * minioClient.composeObject(
+     * ossClient.composeObject(
      *     ComposeObjectArgs.builder()
      *        .bucket("my-bucketname")
      *        .object("my-objectname")
@@ -465,7 +465,7 @@ public class OSSClient extends S3Base {
      *
      * // Create my-bucketname/my-objectname with user metadata and server-side encryption
      * // by combining source object list.
-     * minioClient.composeObject(
+     * ossClient.composeObject(
      *   ComposeObjectArgs.builder()
      *        .bucket("my-bucketname")
      *        .object("my-objectname")
@@ -601,7 +601,7 @@ public class OSSClient extends S3Base {
      * // Get presigned URL string to delete 'my-objectname' in 'my-bucketname' and its life time
      * // is one day.
      * String url =
-     *    minioClient.getPresignedObjectUrl(
+     *    ossClient.getPresignedObjectUrl(
      *        GetPresignedObjectUrlArgs.builder()
      *            .method(Method.DELETE)
      *            .bucket("my-bucketname")
@@ -616,7 +616,7 @@ public class OSSClient extends S3Base {
      * reqParams.put("response-content-type", "application/json");
      *
      * String url =
-     *    minioClient.getPresignedObjectUrl(
+     *    ossClient.getPresignedObjectUrl(
      *        GetPresignedObjectUrlArgs.builder()
      *            .method(Method.PUT)
      *            .bucket("my-bucketname")
@@ -629,7 +629,7 @@ public class OSSClient extends S3Base {
      * // Get presigned URL string to download 'my-objectname' in 'my-bucketname' and its life time
      * // is 2 hours.
      * String url =
-     *    minioClient.getPresignedObjectUrl(
+     *    ossClient.getPresignedObjectUrl(
      *        GetPresignedObjectUrlArgs.builder()
      *            .method(Method.GET)
      *            .bucket("my-bucketname")
@@ -700,7 +700,7 @@ public class OSSClient extends S3Base {
      * // Add condition that 'content-length-range' is between 64kiB to 10MiB.
      * policy.addContentLengthRangeCondition(64 * 1024, 10 * 1024 * 1024);
      *
-     * Map<String, String> formData = minioClient.getPresignedPostFormData(policy);
+     * Map<String, String> formData = ossClient.getPresignedPostFormData(policy);
      *
      * // Upload an image using POST object with form-data.
      * MultipartBody.Builder multipartBuilder = new MultipartBody.Builder();
@@ -759,11 +759,11 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * // Remove object.
-     * minioClient.removeObject(
+     * ossClient.removeObject(
      *     RemoveObjectArgs.builder().bucket("my-bucketname").object("my-objectname").build());
      *
      * // Remove versioned object.
-     * minioClient.removeObject(
+     * ossClient.removeObject(
      *     RemoveObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-versioned-objectname")
@@ -771,7 +771,7 @@ public class OSSClient extends S3Base {
      *         .build());
      *
      * // Remove versioned object bypassing Governance mode.
-     * minioClient.removeObject(
+     * ossClient.removeObject(
      *     RemoveObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-versioned-objectname")
@@ -814,7 +814,7 @@ public class OSSClient extends S3Base {
      * objects.add(new DeleteObject("my-objectname2"));
      * objects.add(new DeleteObject("my-objectname3"));
      * Iterable<Result<DeleteError>> results =
-     *     minioClient.removeObjects(
+     *     ossClient.removeObjects(
      *         RemoveObjectsArgs.builder().bucket("my-bucketname").objects(objects).build());
      * for (Result<DeleteError> result : results) {
      *   DeleteError error = errorResult.get();
@@ -937,16 +937,16 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * // Lists objects information.
-     * Iterable<Result<Item>> results = minioClient.listObjects(
+     * Iterable<Result<Item>> results = ossClient.listObjects(
      *     ListObjectsArgs.builder().bucket("my-bucketname").build());
      *
      * // Lists objects information recursively.
-     * Iterable<Result<Item>> results = minioClient.listObjects(
+     * Iterable<Result<Item>> results = ossClient.listObjects(
      *     ListObjectsArgs.builder().bucket("my-bucketname").recursive(true).build());
      *
      * // Lists maximum 100 objects information whose names starts with 'E' and after
      * // 'ExampleGuide.pdf'.
-     * Iterable<Result<Item>> results = minioClient.listObjects(
+     * Iterable<Result<Item>> results = ossClient.listObjects(
      *     ListObjectsArgs.builder()
      *         .bucket("my-bucketname")
      *         .startAfter("ExampleGuide.pdf")
@@ -956,7 +956,7 @@ public class OSSClient extends S3Base {
      *
      * // Lists maximum 100 objects information with version whose names starts with 'E' and after
      * // 'ExampleGuide.pdf'.
-     * Iterable<Result<Item>> results = minioClient.listObjects(
+     * Iterable<Result<Item>> results = ossClient.listObjects(
      *     ListObjectsArgs.builder()
      *         .bucket("my-bucketname")
      *         .startAfter("ExampleGuide.pdf")
@@ -986,7 +986,7 @@ public class OSSClient extends S3Base {
      * Lists bucket information of all buckets.
      *
      * <pre>Example:{@code
-     * List<Bucket> bucketList = minioClient.listBuckets();
+     * List<Bucket> bucketList = ossClient.listBuckets();
      * for (Bucket bucket : bucketList) {
      *   System.out.println(bucket.creationDate() + ", " + bucket.name());
      * }
@@ -1015,7 +1015,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * List<Bucket> bucketList =
-     *     minioClient.listBuckets(ListBucketsArgs.builder().extraHeaders(headers).build());
+     *     ossClient.listBuckets(ListBucketsArgs.builder().extraHeaders(headers).build());
      * for (Bucket bucket : bucketList) {
      *   System.out.println(bucket.creationDate() + ", " + bucket.name());
      * }
@@ -1048,7 +1048,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * boolean found =
-     *      minioClient.bucketExists(BucketExistsArgs.builder().bucket("my-bucketname").build());
+     *      ossClient.bucketExists(BucketExistsArgs.builder().bucket("my-bucketname").build());
      * if (found) {
      *   System.out.println("my-bucketname exists");
      * } else {
@@ -1088,20 +1088,20 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * // Create bucket with default region.
-     * minioClient.makeBucket(
+     * ossClient.makeBucket(
      *     MakeBucketArgs.builder()
      *         .bucket("my-bucketname")
      *         .build());
      *
      * // Create bucket with specific region.
-     * minioClient.makeBucket(
+     * ossClient.makeBucket(
      *     MakeBucketArgs.builder()
      *         .bucket("my-bucketname")
      *         .region("us-west-1")
      *         .build());
      *
      * // Create object-lock enabled bucket with specific region.
-     * minioClient.makeBucket(
+     * ossClient.makeBucket(
      *     MakeBucketArgs.builder()
      *         .bucket("my-bucketname")
      *         .region("us-west-1")
@@ -1162,7 +1162,7 @@ public class OSSClient extends S3Base {
      * Sets versioning configuration of a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.setBucketVersioning(
+     * ossClient.setBucketVersioning(
      *     SetBucketVersioningArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -1191,7 +1191,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * VersioningConfiguration config =
-     *     minioClient.getBucketVersioning(
+     *     ossClient.getBucketVersioning(
      *         GetBucketVersioningArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -1223,7 +1223,7 @@ public class OSSClient extends S3Base {
      * <pre>Example:{@code
      * ObjectLockConfiguration config = new ObjectLockConfiguration(
      *     RetentionMode.COMPLIANCE, new RetentionDurationDays(100));
-     * minioClient.setObjectLockConfiguration(
+     * ossClient.setObjectLockConfiguration(
      *     SetObjectLockConfigurationArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -1251,7 +1251,7 @@ public class OSSClient extends S3Base {
      * Deletes default object retention in a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteObjectLockConfiguration(
+     * ossClient.deleteObjectLockConfiguration(
      *     DeleteObjectLockConfigurationArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -1281,7 +1281,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * ObjectLockConfiguration config =
-     *     minioClient.getObjectLockConfiguration(
+     *     ossClient.getObjectLockConfiguration(
      *         GetObjectLockConfigurationArgs.builder().bucket("my-bucketname").build());
      * System.out.println("Mode: " + config.mode());
      * System.out.println(
@@ -1316,7 +1316,7 @@ public class OSSClient extends S3Base {
      * <pre>Example:{@code
      *  Retention retention = new Retention(
      *       RetentionMode.COMPLIANCE, ZonedDateTime.now().plusYears(1));
-     *  minioClient.setObjectRetention(
+     *  ossClient.setObjectRetention(
      *      SetObjectRetentionArgs.builder()
      *          .bucket("my-bucketname")
      *          .object("my-objectname")
@@ -1360,7 +1360,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * Retention retention =
-     *     minioClient.getObjectRetention(GetObjectRetentionArgs.builder()
+     *     ossClient.getObjectRetention(GetObjectRetentionArgs.builder()
      *        .bucket(bucketName)
      *        .object(objectName)
      *        .versionId(versionId)
@@ -1402,7 +1402,7 @@ public class OSSClient extends S3Base {
      * Enables legal hold on an object.
      *
      * <pre>Example:{@code
-     * minioClient.enableObjectLegalHold(
+     * ossClient.enableObjectLegalHold(
      *    EnableObjectLegalHoldArgs.builder()
      *        .bucket("my-bucketname")
      *        .object("my-objectname")
@@ -1436,7 +1436,7 @@ public class OSSClient extends S3Base {
      * Disables legal hold on an object.
      *
      * <pre>Example:{@code
-     * minioClient.disableObjectLegalHold(
+     * ossClient.disableObjectLegalHold(
      *    DisableObjectLegalHoldArgs.builder()
      *        .bucket("my-bucketname")
      *        .object("my-objectname")
@@ -1519,7 +1519,7 @@ public class OSSClient extends S3Base {
      * Removes an empty bucket using arguments
      *
      * <pre>Example:{@code
-     * minioClient.removeBucket(RemoveBucketArgs.builder().bucket("my-bucketname").build());
+     * ossClient.removeBucket(RemoveBucketArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
      * @param args {@link RemoveBucketArgs} bucket.
@@ -1547,21 +1547,21 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * // Upload known sized input stream.
-     * minioClient.putObject(
+     * ossClient.putObject(
      *     PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
      *             inputStream, size, -1)
      *         .contentType("video/mp4")
      *         .build());
      *
      * // Upload unknown sized input stream.
-     * minioClient.putObject(
+     * ossClient.putObject(
      *     PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
      *             inputStream, -1, 10485760)
      *         .contentType("video/mp4")
      *         .build());
      *
      * // Create object ends with '/' (also called as folder or directory).
-     * minioClient.putObject(
+     * ossClient.putObject(
      *     PutObjectArgs.builder().bucket("my-bucketname").object("path/to/").stream(
      *             new ByteArrayInputStream(new byte[] {}), 0, -1)
      *         .build());
@@ -1571,7 +1571,7 @@ public class OSSClient extends S3Base {
      * headers.put("X-Amz-Storage-Class", "REDUCED_REDUNDANCY");
      * Map<String, String> userMetadata = new HashMap<>();
      * userMetadata.put("My-Project", "Project One");
-     * minioClient.putObject(
+     * ossClient.putObject(
      *     PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
      *             inputStream, size, -1)
      *         .headers(headers)
@@ -1579,7 +1579,7 @@ public class OSSClient extends S3Base {
      *         .build());
      *
      * // Upload input stream with server-side encryption.
-     * minioClient.putObject(
+     * ossClient.putObject(
      *     PutObjectArgs.builder().bucket("my-bucketname").object("my-objectname").stream(
      *             inputStream, size, -1)
      *         .sse(sse)
@@ -1618,12 +1618,12 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * // Upload an JSON file.
-     * minioClient.uploadObject(
+     * ossClient.uploadObject(
      *     UploadObjectArgs.builder()
      *         .bucket("my-bucketname").object("my-objectname").filename("person.json").build());
      *
      * // Upload a video file.
-     * minioClient.uploadObject(
+     * ossClient.uploadObject(
      *     UploadObjectArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -1661,7 +1661,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * String config =
-     *     minioClient.getBucketPolicy(GetBucketPolicyArgs.builder().bucket("my-bucketname").build());
+     *     ossClient.getBucketPolicy(GetBucketPolicyArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
      * @param args {@link GetBucketPolicyArgs} object.
@@ -1741,7 +1741,7 @@ public class OSSClient extends S3Base {
      * //     "Version": "2012-10-17"
      * // }
      * //
-     * minioClient.setBucketPolicy(
+     * ossClient.setBucketPolicy(
      *     SetBucketPolicyArgs.builder().bucket("my-bucketname").config(policyJson).build());
      * }</pre>
      *
@@ -1775,7 +1775,7 @@ public class OSSClient extends S3Base {
      * Deletes bucket policy configuration to a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteBucketPolicy(DeleteBucketPolicyArgs.builder().bucket("my-bucketname"));
+     * ossClient.deleteBucketPolicy(DeleteBucketPolicyArgs.builder().bucket("my-bucketname"));
      * }</pre>
      *
      * @param args {@link DeleteBucketPolicyArgs} object.
@@ -1819,7 +1819,7 @@ public class OSSClient extends S3Base {
      *         null,
      *         null));
      * LifecycleConfiguration config = new LifecycleConfiguration(rules);
-     * minioClient.setBucketLifecycle(
+     * ossClient.setBucketLifecycle(
      *     SetBucketLifecycleArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -1874,7 +1874,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * LifecycleConfiguration config =
-     *     minioClient.getBucketLifecycle(
+     *     ossClient.getBucketLifecycle(
      *         GetBucketLifecycleArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -1912,7 +1912,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * NotificationConfiguration config =
-     *     minioClient.getBucketNotification(
+     *     ossClient.getBucketNotification(
      *         GetBucketNotificationArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -1947,7 +1947,7 @@ public class OSSClient extends S3Base {
      * eventList.add(EventType.OBJECT_CREATED_COPY);
      *
      * QueueConfiguration queueConfiguration = new QueueConfiguration();
-     * queueConfiguration.setQueue("arn:minio:sqs::1:webhook");
+     * queueConfiguration.setQueue("arn:oss:sqs::1:webhook");
      * queueConfiguration.setEvents(eventList);
      * queueConfiguration.setPrefixRule("images");
      * queueConfiguration.setSuffixRule("pg");
@@ -1958,7 +1958,7 @@ public class OSSClient extends S3Base {
      * NotificationConfiguration config = new NotificationConfiguration();
      * config.setQueueConfigurationList(queueConfigurationList);
      *
-     * minioClient.setBucketNotification(
+     * ossClient.setBucketNotification(
      *     SetBucketNotificationArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -1986,7 +1986,7 @@ public class OSSClient extends S3Base {
      * Deletes notification configuration of a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteBucketNotification(
+     * ossClient.deleteBucketNotification(
      *     DeleteBucketNotificationArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -2016,7 +2016,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * ReplicationConfiguration config =
-     *     minioClient.getBucketReplication(
+     *     ossClient.getBucketReplication(
      *         GetBucketReplicationArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -2075,7 +2075,7 @@ public class OSSClient extends S3Base {
      * ReplicationConfiguration config =
      *     new ReplicationConfiguration("REPLACE-WITH-ACTUAL-ROLE", rules);
      *
-     * minioClient.setBucketReplication(
+     * ossClient.setBucketReplication(
      *     SetBucketReplicationArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -2111,7 +2111,7 @@ public class OSSClient extends S3Base {
      * Deletes bucket replication configuration from a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteBucketReplication(
+     * ossClient.deleteBucketReplication(
      *     DeleteBucketReplicationArgs.builder().bucket("my-bucketname"));
      * }</pre>
      *
@@ -2142,7 +2142,7 @@ public class OSSClient extends S3Base {
      * <pre>Example:{@code
      * String[] events = {"s3:ObjectCreated:*", "s3:ObjectAccessed:*"};
      * try (CloseableIterator<Result<NotificationRecords>> ci =
-     *     minioClient.listenBucketNotification(
+     *     ossClient.listenBucketNotification(
      *         ListenBucketNotificationArgs.builder()
      *             .bucket("bucketName")
      *             .prefix("")
@@ -2202,7 +2202,7 @@ public class OSSClient extends S3Base {
      * OutputSerialization os =
      *     new OutputSerialization(null, null, null, QuoteFields.ASNEEDED, null);
      * SelectResponseStream stream =
-     *     minioClient.selectObjectContent(
+     *     ossClient.selectObjectContent(
      *       SelectObjectContentArgs.builder()
      *       .bucket("my-bucketname")
      *       .object("my-objectname")
@@ -2261,7 +2261,7 @@ public class OSSClient extends S3Base {
      * Sets encryption configuration of a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.setBucketEncryption(
+     * ossClient.setBucketEncryption(
      *     SetBucketEncryptionArgs.builder().bucket("my-bucketname").config(config).build());
      * }</pre>
      *
@@ -2290,7 +2290,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * SseConfiguration config =
-     *     minioClient.getBucketEncryption(
+     *     ossClient.getBucketEncryption(
      *         GetBucketEncryptionArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -2326,7 +2326,7 @@ public class OSSClient extends S3Base {
      * Deletes encryption configuration of a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteBucketEncryption(
+     * ossClient.deleteBucketEncryption(
      *     DeleteBucketEncryptionArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
@@ -2360,7 +2360,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * Tags tags =
-     *     minioClient.getBucketTags(GetBucketTagsArgs.builder().bucket("my-bucketname").build());
+     *     ossClient.getBucketTags(GetBucketTagsArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
      * @param args {@link GetBucketTagsArgs} object.
@@ -2398,7 +2398,7 @@ public class OSSClient extends S3Base {
      * Map<String, String> map = new HashMap<>();
      * map.put("Project", "Project One");
      * map.put("User", "jsmith");
-     * minioClient.setBucketTags(
+     * ossClient.setBucketTags(
      *     SetBucketTagsArgs.builder().bucket("my-bucketname").tags(map).build());
      * }</pre>
      *
@@ -2426,7 +2426,7 @@ public class OSSClient extends S3Base {
      * Deletes tags of a bucket.
      *
      * <pre>Example:{@code
-     * minioClient.deleteBucketTags(DeleteBucketTagsArgs.builder().bucket("my-bucketname").build());
+     * ossClient.deleteBucketTags(DeleteBucketTagsArgs.builder().bucket("my-bucketname").build());
      * }</pre>
      *
      * @param args {@link DeleteBucketTagsArgs} object.
@@ -2453,7 +2453,7 @@ public class OSSClient extends S3Base {
      *
      * <pre>Example:{@code
      * Tags tags =
-     *     minioClient.getObjectTags(
+     *     ossClient.getObjectTags(
      *         GetObjectTagsArgs.builder().bucket("my-bucketname").object("my-objectname").build());
      * }</pre>
      *
@@ -2488,7 +2488,7 @@ public class OSSClient extends S3Base {
      * Map<String, String> map = new HashMap<>();
      * map.put("Project", "Project One");
      * map.put("User", "jsmith");
-     * minioClient.setObjectTags(
+     * ossClient.setObjectTags(
      *     SetObjectTagsArgs.builder()
      *         .bucket("my-bucketname")
      *         .object("my-objectname")
@@ -2522,7 +2522,7 @@ public class OSSClient extends S3Base {
      * Deletes tags of an object.
      *
      * <pre>Example:{@code
-     * minioClient.deleteObjectTags(
+     * ossClient.deleteObjectTags(
      *     DeleteObjectTags.builder().bucket("my-bucketname").object("my-objectname").build());
      * }</pre>
      *

@@ -66,7 +66,7 @@ bean类
 
     //对象操作类
     @Resource
-    MinIoObjectService ossObjectService;
+    OSSObjectService ossObjectService;
 
     //上传文件测试方法
     @SneakyThrows

@@ -48,10 +48,10 @@ public class OSSObjectService {
         this.ossClient = ossClient;
     }
 
-    public OSSObjectService(OSSClient ossClient, OSSProperties minIo) {
+    public OSSObjectService(OSSClient ossClient, OSSProperties properties) {
         this.ossClient = ossClient;
-        this.url = minIo.getEndpoint() + ":" + minIo.getPort();
-        this.defaultBucket = minIo.getDefaultBucket();
+        this.url = properties.getEndpoint() + ":" + properties.getPort();
+        this.defaultBucket = properties.getDefaultBucket();
     }
 
     public void init() {
