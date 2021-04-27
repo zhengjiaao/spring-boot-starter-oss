@@ -55,7 +55,7 @@ public class OSSObjectService {
     }
 
     public void init() {
-        logger.info("com.dist.zja.minio.MinIoObjectService  Init Success！");
+        logger.info("com.dist.zja.oss.OSSObjectService  Init Success！");
     }
 
     @MethodComment(

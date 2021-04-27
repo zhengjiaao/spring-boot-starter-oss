@@ -65,7 +65,7 @@ public class OSSBucketService {
             logger.info("defaultBucket: {}" + defaultBucket);
         }
 
-        logger.info("com.dist.zja.minio.MinioBucketService  Init Success！");
+        logger.info("com.dist.zja.oss.OSSBucketService  Init Success！");
     }
 
     /**
