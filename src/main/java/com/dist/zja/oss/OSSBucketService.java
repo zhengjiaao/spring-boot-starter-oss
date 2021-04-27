@@ -23,7 +23,7 @@ import java.util.List;
  * Email: zhengja@dist.com.cn
  * Desc：
  */
-@ClassComment(value = "OSS 桶服务-操作存储桶")
+@ClassComment(value = "OSS 桶服务-操作存储桶", author = "zhengja")
 public class OSSBucketService {
 
     public static Logger logger = LoggerFactory.getLogger(OSSBucketService.class);
@@ -72,7 +72,7 @@ public class OSSBucketService {
      * 验证桶名称规则
      * @param name
      */
-    protected void validateBucketName(String name) {
+    private void validateBucketName(String name) {
         validateNotNull(name, "bucket name");
 
         // Bucket names cannot be no less than 3 and no more than 63 characters long.
@@ -101,7 +101,7 @@ public class OSSBucketService {
      * @param arg
      * @param argName
      */
-    protected void validateNotNull(Object arg, String argName) {
+    private void validateNotNull(Object arg, String argName) {
         if (arg == null) {
             throw new IllegalArgumentException(argName + " must not be null,Must be configured dist.minio.config.default-bucket=");
         }
@@ -121,7 +121,7 @@ public class OSSBucketService {
     @MethodComment(
             function = "默认桶-创建新的桶",
             description = "使用默认桶 defaultBucket，必须配置 dist.minio.config.default-bucket= ")
-    public boolean makeBucket() {
+    private boolean makeBucket() {
         validateBucketName(defaultBucket);
         return makeBucket(defaultBucket);
     }

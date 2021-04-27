@@ -64,8 +64,8 @@ public class OSSObjectService {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "folderName", description = "对象id(存储名称)")
             })
-    public ObjectWriteResponse putObjectByFolder(String folderName) throws Exception {
-        return putObjectByFolder(defaultBucket, folderName);
+    public ObjectWriteResponse putObjectFolder(String folderName) throws Exception {
+        return putObjectFolder(defaultBucket, folderName);
     }
 
     @MethodComment(
@@ -74,7 +74,7 @@ public class OSSObjectService {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "folderName", description = "对象id(存储名称)")
             }, description = "创建对象以“ /”结尾（也称为文件夹或目录）")
-    public ObjectWriteResponse putObjectByFolder(String bucketName, String folderName) throws Exception {
+    public ObjectWriteResponse putObjectFolder(String bucketName, String folderName) throws Exception {
         return ossClient.putObject(
                 PutObjectArgs.builder().bucket(bucketName).object(folderName + "/").stream(
                         new ByteArrayInputStream(new byte[]{}), 0, -1)
@@ -85,19 +85,19 @@ public class OSSObjectService {
             function = "默认桶-对象上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
-                    @Param(name = "filePath", description = "本地对象路径")
+                    @Param(name = "folderPath", description = "本地文件夹路径")
             })
-    public void putObjectFolder(String objectName, String folderPath) throws Exception {
-        putObjectFolder(defaultBucket, objectName, folderPath);
+    public void uploadObjectFolder(String objectName, String folderPath) throws Exception {
+        uploadObjectFolder(defaultBucket, objectName, folderPath);
     }
 
     @MethodComment(
             function = "默认桶-对象上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
-                    @Param(name = "filePath", description = "本地对象路径")
+                    @Param(name = "folderPath", description = "本地文件夹路径")
             })
-    public void putObjectFolder(String bucketName, String objectName, String folderPath) throws Exception {
+    public void uploadObjectFolder(String bucketName, String objectName, String folderPath) throws Exception {
         if (Files.isDirectory(Paths.get(folderPath))) {
             File dir = new File(folderPath);
             if (dir.list().length < 0) {
@@ -111,10 +111,10 @@ public class OSSObjectService {
             function = "默认桶-对象上传-本地对象路径",
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
-                    @Param(name = "filePath", description = "本地对象路径")
+                    @Param(name = "filePath", description = "本地文件路径")
             })
-    public ObjectWriteResponse putObject(String objectName, String filename) throws Exception {
-        return putObject(defaultBucket, objectName, filename);
+    public ObjectWriteResponse uploadObjectFile(String objectName, String filePath) throws Exception {
+        return uploadObjectFile(defaultBucket, objectName, filePath);
     }
 
     @MethodComment(
@@ -122,14 +122,14 @@ public class OSSObjectService {
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象id(存储名称)"),
-                    @Param(name = "filePath", description = "本地对象路径")
+                    @Param(name = "filePath", description = "本地文件路径")
             })
-    public ObjectWriteResponse putObject(String bucketName, String objectName, String filename) throws Exception {
+    public ObjectWriteResponse uploadObjectFile(String bucketName, String objectName, String filePath) throws Exception {
         return ossClient.uploadObject(
                 UploadObjectArgs.builder()
                         .bucket(bucketName)
                         .object(objectName)
-                        .filename(filename)
+                        .filename(filePath)
                         .build());
     }
 
@@ -382,10 +382,10 @@ public class OSSObjectService {
             function = "默认桶-下载对象-下载到本服务器",
             params = {
                     @Param(name = "objectName", description = "存储桶里的对象名称"),
-                    @Param(name = "filename", description = "对象存储位置")
+                    @Param(name = "filePath", description = "文件本地存储位置")
             }, description = "下载并将文件保存到本地")
-    public void downloadObject(String objectName, String filename) throws Exception {
-        downloadObject(defaultBucket, objectName, filename);
+    public void downloadObject(String objectName, String filePath) throws Exception {
+        downloadObject(defaultBucket, objectName, filePath);
     }
 
     @MethodComment(
@@ -393,13 +393,13 @@ public class OSSObjectService {
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "存储桶里的对象名称"),
-                    @Param(name = "filename", description = "对象存储位置")
+                    @Param(name = "filePath", description = "文件本地存储位置")
             }, description = "下载并将文件保存到本地")
-    public void downloadObject(String bucketName, String objectName, String filename) throws Exception {
+    public void downloadObject(String bucketName, String objectName, String filePath) throws Exception {
         ossClient.downloadObject(DownloadObjectArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
-                .filename(filename)
+                .filename(filePath)
                 .build());
     }
 
@@ -793,7 +793,7 @@ public class OSSObjectService {
             if (Files.isDirectory(Paths.get(fileElem.toURI()))) {
                 uploadFolder(bucketName, parentName + "/" + fileElem.getName(), fileElem);
             } else {
-                putObject(bucketName, parentName + "/" + fileElem.getName(), fileElem.getAbsolutePath());
+                uploadObjectFile(bucketName, parentName + "/" + fileElem.getName(), fileElem.getAbsolutePath());
             }
         }
     }

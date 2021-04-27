@@ -17,36 +17,25 @@ import org.springframework.util.StringUtils;
  */
 @Configuration
 @EnableConfigurationProperties({OSSProperties.class})
-@ConditionalOnProperty(name = "dist.minio.config.enabled", matchIfMissing = true)
+@ConditionalOnProperty(name = "dist.oss.config.enabled", matchIfMissing = true)
 public class OSSAutoConfig {
 
-    private OSSProperties minIo;
+    private OSSProperties properties;
 
     public OSSAutoConfig(OSSProperties OSSProperties) {
         if (OSSProperties.getDefaultBucket() != null) {
             validateBucketName(OSSProperties.getDefaultBucket());
         }
-        this.minIo = OSSProperties;
+        this.properties = OSSProperties;
     }
-
-/*    @Bean
-    @ConditionalOnMissingBean
-    public MinioClient minioClient() {
-        // Create a minioClient with the MinIO server playground, its access key and secret key.
-        MinioClient minioClient = MinioClient.builder()
-                .endpoint(minIo.getEndpoint(), minIo.getPort(), minIo.isSecure())
-                .credentials(minIo.getAccessKey(), minIo.getSecretKey())
-                .build();
-        return minioClient;
-    }*/
 
     @Bean
     @ConditionalOnMissingBean
     public OSSClient ossClient() {
-        // Create a OSSClient with the MinIO server playground, its access key and secret key.
+        // Create a OSSClient with the OSS server playground, its access key and secret key.
         OSSClient ossClient = OSSClient.builder()
-                .endpoint(minIo.getEndpoint(), minIo.getPort(), minIo.isSecure())
-                .credentials(minIo.getAccessKey(), minIo.getSecretKey())
+                .endpoint(properties.getEndpoint(), properties.getPort(), properties.isSecure())
+                .credentials(properties.getAccessKey(), properties.getSecretKey())
                 .build();
         return ossClient;
     }
@@ -54,19 +43,19 @@ public class OSSAutoConfig {
     @Bean(initMethod = "init")
     @ConditionalOnMissingBean
     public OSSBucketService ossBucketService(OSSClient ossClient) {
-        if (StringUtils.isEmpty(minIo.getDefaultBucket())) {
+        if (StringUtils.isEmpty(properties.getDefaultBucket())) {
             return new OSSBucketService(ossClient);
         }
-        return new OSSBucketService(ossClient, minIo.getDefaultBucket());
+        return new OSSBucketService(ossClient, properties.getDefaultBucket());
     }
 
     @Bean(initMethod = "init")
     @ConditionalOnMissingBean
     public OSSObjectService ossObjectService(OSSClient ossClient) {
-        if (StringUtils.isEmpty(minIo.getDefaultBucket())) {
+        if (StringUtils.isEmpty(properties.getDefaultBucket())) {
             return new OSSObjectService(ossClient);
         }
-        return new OSSObjectService(ossClient, minIo);
+        return new OSSObjectService(ossClient, properties);
     }
 
 

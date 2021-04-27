@@ -15,45 +15,45 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class OSSProperties {
 
     /**
-     * Minio 启用
+     * OSS 启用
      */
-    @AttributeComment("Minio 启用")
+    @AttributeComment("OSS 启用")
     private boolean enabled = true;
 
     /**
-     * Minio 启动 https
+     * OSS 启动 https
      */
-    @AttributeComment("Minio 启动 https , 需配置Minio TLS证书")
+    @AttributeComment("OSS 启动 https , 需配置OSS TLS证书")
     private boolean secure = false;
 
     /**
-     * Minio 服务地址
+     * OSS 服务地址
      */
-    @AttributeComment("Minio服务端 例 http://127.0.0.1")
+    @AttributeComment("OSS服务端 例 http://127.0.0.1")
     private String endpoint;
 
     /**
-     * Minio port
+     * OSS port
      */
-    @AttributeComment("Minio 端口 例 9000")
+    @AttributeComment("OSS 端口 例 9000")
     private int port;
 
     /**
-     * Minio ACCESS_KEY
+     * OSS ACCESS_KEY
      */
-    @AttributeComment("Minio ACCESS_KEY")
+    @AttributeComment("OSS ACCESS_KEY")
     private String accessKey;
 
     /**
-     * Minio SECRET_KEY
+     * OSS SECRET_KEY
      */
-    @AttributeComment("Minio SECRET_KEY")
+    @AttributeComment("OSS SECRET_KEY")
     private String secretKey;
 
     /**
-     * Minio DEFAULT_BUCKET ,可选
+     * OSS DEFAULT_BUCKET ,可选
      */
-    @AttributeComment("Minio DEFAULT_BUCKET,可选的 defaultBucket")
+    @AttributeComment("OSS DEFAULT_BUCKET,可选的 defaultBucket")
     private String defaultBucket;
 
     public boolean isEnabled() {
