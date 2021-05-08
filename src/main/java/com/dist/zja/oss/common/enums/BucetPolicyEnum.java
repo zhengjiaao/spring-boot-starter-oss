@@ -9,5 +9,5 @@ package com.dist.zja.oss.common.enums;
  * Desc：
  */
 public enum BucetPolicyEnum {
-    READ_ONLY, WRITE_ONLY, READ_WRITE, NONE;  // 桶策略，只读，只写，读写
+    READ_ONLY, WRITE_ONLY, READ_WRITE, NONE;  // 桶策略: 只读，只写，读写，不设置(默不可读、写)
 }

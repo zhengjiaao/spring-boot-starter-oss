@@ -86,7 +86,7 @@ public class OSSObjectService {
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
                     @Param(name = "folderPath", description = "本地文件夹路径")
-            },description = "空目录过滤不会上传，文件夹中空文件可以上传")
+            }, description = "空目录过滤不会上传，文件夹中空文件可以上传")
     public void uploadObjectFolder(String objectName, String folderPath) throws Exception {
         uploadObjectFolder(defaultBucket, objectName, folderPath);
     }
@@ -96,14 +96,16 @@ public class OSSObjectService {
             params = {
                     @Param(name = "objectName", description = "对象id(存储名称)"),
                     @Param(name = "folderPath", description = "本地文件夹路径")
-            },description = "空目录过滤不会上传，文件夹中空文件可以上传")
+            }, description = "空目录过滤不会上传，文件夹中空文件可以上传")
     public void uploadObjectFolder(String bucketName, String objectName, String folderPath) throws Exception {
         if (Files.isDirectory(Paths.get(folderPath))) {
             File dir = new File(folderPath);
             if (dir.list().length < 0) {
-                throw new NullPointerException(" Directory is null !");
+                throw new NullPointerException("Directory or Folder is null !");
             }
             uploadFolder(bucketName, objectName, dir);
+        } else {
+            throw new IllegalAccessException("Please choose a folder！");
         }
     }
 
@@ -314,12 +316,11 @@ public class OSSObjectService {
             function = "默认桶-获取对象流-支持断点下载",
             params = {
                     @Param(name = "objectName", description = "存储桶里的对象名称"),
-                    @Param(name = "offset", description = "offset 是起始字节的位置"),
-                    @Param(name = "length", description = "length是要读取的长度 (可选，如果无值则代表读到对象结尾)")
+                    @Param(name = "ossRange", description = "指定范围下载")
             },
             description = "下载对象指定区域的字节数组做为流。（断点下载）")
-    public GetObjectResponse getObject(String objectName, Long offset, Long length) throws Exception {
-        return getObject(defaultBucket, objectName, offset, length);
+    public GetObjectResponse getObject(String objectName, OSSRange ossRange) throws Exception {
+        return getObject(defaultBucket, objectName, ossRange);
     }
 
     @MethodComment(
@@ -327,17 +328,16 @@ public class OSSObjectService {
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "存储桶里的对象名称"),
-                    @Param(name = "offset", description = "offset 是起始字节的位置"),
-                    @Param(name = "length", description = "length是要读取的长度 (可选，如果无值则代表读到对象结尾)")
+                    @Param(name = "ossRange", description = "指定范围下载")
             },
             description = "下载对象指定区域的字节数组做为流。（断点下载）")
-    public GetObjectResponse getObject(String bucketName, String objectName, Long offset, Long length) throws Exception {
+    public GetObjectResponse getObject(String bucketName, String objectName, OSSRange ossRange) throws Exception {
         return ossClient.getObject(
                 GetObjectArgs.builder()
                         .bucket(bucketName)
                         .object(objectName)
-                        .offset(offset)
-                        .length(length)
+                        .offset(ossRange.getOffset())
+                        .length(ossRange.getLength())
                         .build());
     }
 
@@ -453,7 +453,7 @@ public class OSSObjectService {
                 .build()).userMetadata();
     }
 
-    @MethodComment(
+/*    @MethodComment(
             function = "默认桶-通过SQL表达式选择对象的内容",
             params = {
                     @Param(name = "objectName", description = "存储桶里的对象名称"),
@@ -482,7 +482,7 @@ public class OSSObjectService {
                         .outputSerialization(os)
                         .requestProgress(true)
                         .build());
-    }
+    }*/
 
     @MethodComment(
             function = "默认桶-获取对象永久网址-URL",
@@ -504,7 +504,7 @@ public class OSSObjectService {
         return url + "/" + bucketName + "/" + objectName;
     }
 
-    @MethodComment(
+/*    @MethodComment(
             function = "默认桶-获取预签名对象网址-URL",
             params = {
                     @Param(name = "objectName", description = "存储桶里的对象名称")
@@ -526,32 +526,61 @@ public class OSSObjectService {
                         .bucket(bucketName)
                         .object(objectName)
                         .build());
-    }
+    }*/
 
     @MethodComment(
-            function = "默认桶-获取对象外链-url-自定义设置分享过期时间",
+            function = "默认桶-获取对象下载共享链接-url-自定义设置分享过期时间",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)"),
                     @Param(name = "expiry", description = "失效时间（以秒为单位），默认是7天，不得大于七天")
             },
             description = "设置有效期的分享链接（共享文件时间最大7天）。生成一个给HTTP GET请求用的presigned URL。浏览器/移动端的客户端可以用这个URL进行下载，即使其所在的存储桶是私有的。这个presigned URL可以设置一个失效时间，默认值是7天")
-    public String getObjectShareLink(String objectName, int expiry) throws Exception {
-        return getObjectShareLink(defaultBucket, objectName, expiry);
+    public String getObjectDownloadShareLink(String objectName, int expiry) throws Exception {
+        return getObjectDownloadShareLink(defaultBucket, objectName, expiry);
     }
 
     @MethodComment(
-            function = "指定桶-获取对象外链-url-自定义设置分享过期时间",
+            function = "指定桶-获取对象下载共享链接-url-自定义设置分享过期时间",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)"),
                     @Param(name = "expiry", description = "失效时间（以秒为单位），默认是7天，不得大于七天")
             },
             description = "设置有效期的分享链接（共享文件时间最大7天）。生成一个给HTTP GET请求用的presigned URL。浏览器/移动端的客户端可以用这个URL进行下载，即使其所在的存储桶是私有的。这个presigned URL可以设置一个失效时间，默认值是7天")
-    public String getObjectShareLink(String bucketName, String objectName, int expiry) throws Exception {
+    public String getObjectDownloadShareLink(String bucketName, String objectName, int expiry) throws Exception {
         return ossClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                 .bucket(bucketName)
                 .object(objectName)
                 .method(Method.GET)
+                .expiry(expiry)
+                .build());
+    }
+
+
+    @MethodComment(
+            function = "默认桶-获取对象上传共享链接-url-自定义设置分享过期时间",
+            params = {
+                    @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)"),
+                    @Param(name = "expiry", description = "失效时间（以秒为单位），默认是7天，不得大于七天")
+            },
+            description = "获取上传文件的url，可用Postman测试，在put body binary里放入需要上传的文件即可")
+    public String getObjectUploadShareLink(String objectName, int expiry) throws Exception {
+        return getObjectUploadShareLink(defaultBucket, objectName, expiry);
+    }
+
+    @MethodComment(
+            function = "指定桶-获取对象上传共享链接-url-自定义设置分享过期时间",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)"),
+                    @Param(name = "expiry", description = "失效时间（以秒为单位），默认是7天，不得大于七天")
+            },
+            description = "获取上传文件的url，可用Postman测试，在put body binary里放入需要上传的文件即可")
+    public String getObjectUploadShareLink(String bucketName, String objectName, int expiry) throws Exception {
+        return ossClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .bucket(bucketName)
+                .object(objectName)
+                .method(Method.PUT)
                 .expiry(expiry)
                 .build());
     }
@@ -579,7 +608,7 @@ public class OSSObjectService {
 
         Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
-        BitMatrix bitMatrix = new MultiFormatWriter().encode(getObjectShareLink(bucketName, objectName, expiry),
+        BitMatrix bitMatrix = new MultiFormatWriter().encode(this.getObjectDownloadShareLink(bucketName, objectName, expiry),
                 BarcodeFormat.QR_CODE, 200, 200, hints);
         BufferedImage image = ZxingOrCodeUtils.deleteWhite(bitMatrix);
 
@@ -594,7 +623,7 @@ public class OSSObjectService {
                     @Param(name = "prefix", description = "桶中对象的前缀 默认 空字符串"),
                     @Param(name = "recursive", description = "是否递归子目录")
             })
-    public List getAllObjectsByPrefix(String prefix, boolean recursive) throws Exception {
+    public List<Item> getAllObjectsByPrefix(String prefix, boolean recursive) throws Exception {
         return getAllObjectsByPrefix(defaultBucket, prefix, recursive);
     }
 
@@ -605,7 +634,7 @@ public class OSSObjectService {
                     @Param(name = "prefix", description = "桶中对象的前缀 默认 空字符串"),
                     @Param(name = "recursive", description = "是否递归子目录")
             })
-    public List getAllObjectsByPrefix(String bucketName, String prefix, boolean recursive) throws Exception {
+    public List<Item> getAllObjectsByPrefix(String bucketName, String prefix, boolean recursive) throws Exception {
         List<Item> list = new ArrayList<>();
         Iterable<Result<Item>> objectsIterator = ossClient.listObjects(ListObjectsArgs.builder()
                 .bucket(bucketName)
@@ -780,7 +809,7 @@ public class OSSObjectService {
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
-            },description = "无法删除目录类型的对象")
+            }, description = "无法删除目录类型的对象")
     public void deleteObjects(String bucketName, List<DeleteObject> objectNames) throws Exception {
         for (Result<DeleteError> errorResult : ossClient.removeObjects(RemoveObjectsArgs.builder().bucket(bucketName).objects(objectNames).build())) {
             DeleteError deleteError = errorResult.get();
