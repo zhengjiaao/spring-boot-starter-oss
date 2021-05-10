@@ -12,6 +12,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <organization>
+        <name>DIST, Zhengja.</name>
+        <url>http://www.dist.com.cn/</url>
+    </organization>
+
     <repositories>
         <repository>
             <releases>

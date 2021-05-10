@@ -14,6 +14,7 @@ import io.oss.http.Method;
 import io.oss.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -64,7 +65,7 @@ public class OSSObjectService {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "folderName", description = "对象id(存储名称)")
             })
-    public ObjectWriteResponse putObjectFolder(String folderName) throws Exception {
+    private ObjectWriteResponse putObjectFolder(String folderName) throws Exception {
         return putObjectFolder(defaultBucket, folderName);
     }
 
@@ -74,7 +75,7 @@ public class OSSObjectService {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "folderName", description = "对象id(存储名称)")
             }, description = "创建对象以“ /”结尾（也称为文件夹或目录）")
-    public ObjectWriteResponse putObjectFolder(String bucketName, String folderName) throws Exception {
+    private ObjectWriteResponse putObjectFolder(String bucketName, String folderName) throws Exception {
         return ossClient.putObject(
                 PutObjectArgs.builder().bucket(bucketName).object(folderName + "/").stream(
                         new ByteArrayInputStream(new byte[]{}), 0, -1)
@@ -103,7 +104,7 @@ public class OSSObjectService {
             if (dir.list().length < 0) {
                 throw new NullPointerException("Directory or Folder is null !");
             }
-            uploadFolder(bucketName, objectName, dir);
+            this.uploadFolder(bucketName, objectName, dir);
         } else {
             throw new IllegalAccessException("Please choose a folder！");
         }
@@ -817,12 +818,44 @@ public class OSSObjectService {
         }
     }
 
+    @MethodComment(
+            function = "默认桶-删除指定文件夹",
+            params = {
+                    @Param(name = "objectFolderName", description = "对象ID(存储桶里的对象文件夹名称)")
+            })
+    public void deleteObjectFolder(String objectFolderName) throws Exception {
+        this.deleteObjectFolder(defaultBucket, objectFolderName);
+    }
+
+    @MethodComment(
+            function = "指定桶-删除指定文件夹",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "objectFolderName", description = "对象ID(存储桶里的对象文件夹名称)")
+            })
+    public void deleteObjectFolder(String bucketName, String objectFolderName) throws Exception {
+        List<Item> objects = this.getAllObjectsByPrefix(bucketName, objectFolderName + "/", true);
+        if (ObjectUtils.isEmpty(objects)) {
+            return;
+        }
+        for (Item item : objects) {
+            this.deleteObject(bucketName, item.objectName());
+        }
+    }
+
+    /**
+     * 上传本地文件夹下的所有文件对象
+     * @param bucketName
+     * @param parentName
+     * @param file
+     * @throws Exception
+     */
     private void uploadFolder(String bucketName, String parentName, File file) throws Exception {
         for (File fileElem : file.listFiles()) {
             if (Files.isDirectory(Paths.get(fileElem.toURI()))) {
-                uploadFolder(bucketName, parentName + "/" + fileElem.getName(), fileElem);
+                this.uploadFolder(bucketName, parentName + "/" + fileElem.getName(), fileElem);
             } else {
-                uploadObjectFile(bucketName, parentName + "/" + fileElem.getName(), fileElem.getAbsolutePath());
+                this.uploadObjectFile(bucketName, parentName + "/" + fileElem.getName(), fileElem.getAbsolutePath());
             }
         }
     }

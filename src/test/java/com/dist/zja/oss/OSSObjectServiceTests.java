@@ -37,10 +37,11 @@ public class OSSObjectServiceTests {
     @Test
     public void test1() throws Exception {
         //上传本地文件  底层实现份分片上传
-//        ossObjectService.uploadObjectFile("mybucket", "aaa.txt", "D:\\Temp\\aaa.txt");
+        ossObjectService.uploadObjectFile("mybucket", "aaa.txt", "D:\\Temp\\aaa.txt");
 
         //上传文件夹 底层实现分片  空目录过滤不会上传，空文件可以上传
-        ossObjectService.uploadObjectFolder("mybucket", "aaa", "D:\\Temp\\aaa");
+//        ossObjectService.uploadObjectFolder("mybucket", "aaa", "D:\\Temp\\aaa");
+//        ossObjectService.uploadObjectFolder("mybucket1", "documents", "D:\\Temp\\documents");
 
         //上传文件流 底层实现分片
 //        InputStream input = new FileInputStream(new File("C:\\a.zip"));
@@ -135,7 +136,7 @@ public class OSSObjectServiceTests {
     @Test
     public void test10() throws Exception {
         //根据前缀获取对象-不获取子目录
-        List<Item> objectsByPrefix = ossObjectService.getAllObjectsByPrefix("mybucket", "aaa", false);
+        List<Item> objectsByPrefix = ossObjectService.getAllObjectsByPrefix("mybucket", "aaa/", false);
         for (Item item : objectsByPrefix) {
             System.out.println("objectName: " + item.objectName() + " , isDir: " + item.isDir());
         }
@@ -156,5 +157,10 @@ public class OSSObjectServiceTests {
         System.out.println("test10-3： " + objects3);
     }
 
+    @Test
+    public void test11() throws Exception {
+        //删除文件夹
+        ossObjectService.deleteObjectFolder("mybucket","aaa");
+    }
 
 }
