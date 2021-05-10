@@ -55,11 +55,11 @@ public class OSSObjectService {
         this.defaultBucket = properties.getDefaultBucket();
     }
 
-    public void init() {
+    private void init() {
         logger.info("com.dist.zja.oss.OSSObjectService  Init Success！");
     }
 
-    @MethodComment(
+/*    @MethodComment(
             function = "默认桶-创建对象(文件夹or目录)",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
@@ -80,7 +80,7 @@ public class OSSObjectService {
                 PutObjectArgs.builder().bucket(bucketName).object(folderName + "/").stream(
                         new ByteArrayInputStream(new byte[]{}), 0, -1)
                         .build());
-    }
+    }*/
 
     @MethodComment(
             function = "默认桶-文件夹上传-本地对象路径",
@@ -657,6 +657,25 @@ public class OSSObjectService {
     }
 
     @MethodComment(
+            function = "默认桶-获取对象文件夹下的所有对象",
+            params = {
+                    @Param(name = "objectFolderName", description = "桶中对象文件夹名称")
+            })
+    public List<Item> getObjectFolder(String objectFolderName) throws Exception {
+        return this.getAllObjectsByPrefix(defaultBucket, objectFolderName + "/", true);
+    }
+
+    @MethodComment(
+            function = "指定桶-获取对象文件夹下的所有对象",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "objectFolderName", description = "桶中对象文件夹名称")
+            })
+    public List<Item> getObjectFolder(String bucketName, String objectFolderName) throws Exception {
+        return this.getAllObjectsByPrefix(bucketName, objectFolderName + "/", true);
+    }
+
+    @MethodComment(
             function = "默认桶-组合源对象列表",
             params = {
                     @Param(name = "objectName", description = "对象ID(存储桶里的对象名称)")
@@ -702,6 +721,35 @@ public class OSSObjectService {
                         .object(objectName)
                         .source(source)
                         .build());
+    }
+
+    @MethodComment(
+            function = "指定桶-通过服务器端从另一个对象文件夹复制数据来创建新的对象文件夹",
+            params = {
+                    @Param(name = "objectFolderName", description = "对象ID(存储桶里的对象文件夹名称)"),
+                    @Param(name = "sourceFolder", description = "已存在的源对象文件夹")
+            }, description = "从服务器端已经存在对象文件夹拷贝到新的对象文件夹")
+    public void copyObjectFolder(String objectFolderName, CopySourceFolder sourceFolder) throws Exception {
+        List<Item> objectFolder = this.getObjectFolder(sourceFolder.getBucketName(), sourceFolder.getObjectFolderName());
+        for (Item item : objectFolder) {
+            this.copyObject(defaultBucket, item.objectName().replaceFirst(sourceFolder.getObjectFolderName() + "/", objectFolderName + "/"), CopySource.builder()
+                    .bucket(sourceFolder.getBucketName()).object(item.objectName()).build());
+        }
+    }
+
+    @MethodComment(
+            function = "指定桶-通过服务器端从另一个对象文件夹复制数据来创建新的对象文件夹",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "objectFolderName", description = "对象ID(存储桶里的对象文件夹名称)"),
+                    @Param(name = "sourceFolder", description = "已存在的源对象文件夹")
+            }, description = "从服务器端已经存在对象文件夹拷贝到新的对象文件夹")
+    public void copyObjectFolder(String bucketName, String objectFolderName, CopySourceFolder sourceFolder) throws Exception {
+        List<Item> objectFolder = this.getObjectFolder(sourceFolder.getBucketName(), sourceFolder.getObjectFolderName());
+        for (Item item : objectFolder) {
+            this.copyObject(bucketName, item.objectName().replaceFirst(sourceFolder.getObjectFolderName() + "/", objectFolderName + "/"), CopySource.builder()
+                    .bucket(sourceFolder.getBucketName()).object(item.objectName()).build());
+        }
     }
 
     @MethodComment(

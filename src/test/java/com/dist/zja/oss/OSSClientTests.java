@@ -212,9 +212,37 @@ public class OSSClientTests {
         ossClient.setBucketNotification(SetBucketNotificationArgs.builder().bucket("mybucket").config(config).build());
     }
 
-    //设置存储桶复制
-//        ossClient.setBucketReplication();
-    //设置存储桶版本控制
-//        ossClient.setBucketVersioning();
+    //*********设置存储桶复制-start**********
+
+    //设置存储桶复制 未测试
+    @Test
+    public void test13() throws Exception {
+
+        Map<String, String> tags = new HashMap<>();
+        tags.put("key1", "value1");
+        tags.put("key2", "value2");
+
+        ReplicationRule rule =
+                new ReplicationRule(
+                        new DeleteMarkerReplication(Status.DISABLED),
+                        new ReplicationDestination(
+                                null, null, "REPLACE-WITH-ACTUAL-DESTINATION-BUCKET-ARN", null, null, null, null),
+                        null,
+                        new RuleFilter(new AndOperator("TaxDocs", tags)),
+                        "rule1",
+                        null,
+                        1,
+                        null,
+                        Status.ENABLED);
+
+        List<ReplicationRule> rules = new LinkedList<>();
+        rules.add(rule);
+
+        ReplicationConfiguration config =
+                new ReplicationConfiguration("REPLACE-WITH-ACTUAL-ROLE", rules);
+
+        ossClient.setBucketReplication(
+                SetBucketReplicationArgs.builder().bucket("mybucket").config(config).build());
+    }
 
 }
