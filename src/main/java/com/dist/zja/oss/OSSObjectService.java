@@ -55,7 +55,7 @@ public class OSSObjectService {
         this.defaultBucket = properties.getDefaultBucket();
     }
 
-    private void init() {
+    public void init() {
         logger.info("com.dist.zja.oss.OSSObjectService  Init Success！");
     }
 

@@ -59,7 +59,7 @@ public class OSSBucketService {
     /**
      * 初始化默认桶
      */
-    private void init() {
+    public void init() {
         if (!StringUtils.isEmpty(defaultBucket)) {
             makeBucket();
             logger.info("defaultBucket: " + defaultBucket);
