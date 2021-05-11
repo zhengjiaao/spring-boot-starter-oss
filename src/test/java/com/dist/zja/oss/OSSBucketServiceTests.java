@@ -1,6 +1,6 @@
 package com.dist.zja.oss;
 
-import com.dist.zja.oss.common.enums.BucetPolicyEnum;
+import com.dist.zja.oss.common.enums.PolicyEnum;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -40,7 +40,7 @@ public class OSSBucketServiceTests {
     @Test
     public void test2() throws Exception {
         //设置桶策略 可读
-        ossBucketService.setBucketPolicy("mybucket", BucetPolicyEnum.READ_WRITE);
+        ossBucketService.setBucketPolicy("mybucket", PolicyEnum.READ_WRITE);
         //查看桶策略
         System.out.println("BucketPolicy: " + ossBucketService.getBucketPolicy("mybucket"));
         //删除桶策略

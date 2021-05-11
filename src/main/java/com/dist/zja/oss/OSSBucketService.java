@@ -3,7 +3,7 @@ package com.dist.zja.oss;
 import com.dist.zja.oss.common.annotations.ClassComment;
 import com.dist.zja.oss.common.annotations.MethodComment;
 import com.dist.zja.oss.common.annotations.Param;
-import com.dist.zja.oss.common.enums.BucetPolicyEnum;
+import com.dist.zja.oss.common.enums.PolicyEnum;
 import io.oss.*;
 import io.oss.messages.Bucket;
 import io.oss.messages.Item;
@@ -293,7 +293,7 @@ public class OSSBucketService {
             params = {
                     @Param(name = "BucetPolicyEnum", description = "策略枚举")
             })
-    public void setBucketPolicy(BucetPolicyEnum policy) throws Exception {
+    public void setBucketPolicy(PolicyEnum policy) throws Exception {
         setBucketPolicy(defaultBucket, policy);
     }
 
@@ -303,7 +303,7 @@ public class OSSBucketService {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "BucetPolicyEnum", description = "策略枚举")
             })
-    public void setBucketPolicy(String bucketName, BucetPolicyEnum policy) throws Exception {
+    public void setBucketPolicy(String bucketName, PolicyEnum policy) throws Exception {
         updataBucketPolicy(bucketName, policy);
     }
 
@@ -375,7 +375,7 @@ public class OSSBucketService {
      * @param bucketName 桶
      * @param policy 权限
      */
-    public void updataBucketPolicy(String bucketName, BucetPolicyEnum policy) throws Exception {
+    public void updataBucketPolicy(String bucketName, PolicyEnum policy) throws Exception {
         switch (policy) {
             case READ_ONLY:
                 ossClient.setBucketPolicy(SetBucketPolicyArgs.builder().bucket(bucketName).config(READ_ONLY.replace(BUCKET_PARAM, bucketName)).build());

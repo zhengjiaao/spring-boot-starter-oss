@@ -47,7 +47,7 @@ public class OSSObjectServiceTests {
 //        ossObjectService.uploadObjectFile("mybucket", "aaa.txt", "D:\\Temp\\aaa.txt");
 
         //上传文件夹 底层实现分片  空目录过滤不会上传，空文件可以上传
-        ossObjectService.uploadObjectFolder("mybucket", "aaa", "D:\\Temp\\aaa");
+//        ossObjectService.uploadObjectFolder("mybucket", "aaa", "D:\\Temp\\aaa");
 //        ossObjectService.uploadObjectFolder("mybucket1", "documents", "D:\\Temp\\documents");
 
         //上传文件流 底层实现分片
@@ -55,8 +55,8 @@ public class OSSObjectServiceTests {
 //        ossObjectService.putObject("mybucket", "a.zip",input);
 
         //获取url链接地址，通过此url put方式上传文件
-//        String shareLink = ossObjectService.getObjectUploadShareLink("mybucket", "c.txt", 120);
-//        System.out.println(shareLink);
+        String shareLink = ossObjectService.getObjectUploadShareLink("mybucket", "e.txt", 120);
+        System.out.println(shareLink);
 
     }
 

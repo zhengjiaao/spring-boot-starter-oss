@@ -8,6 +8,6 @@ package com.dist.zja.oss.common.enums;
  * Email: zhengja@dist.com.cn
  * Desc：
  */
-public enum BucetPolicyEnum {
+public enum PolicyEnum {
     READ_ONLY, WRITE_ONLY, READ_WRITE, NONE;  // 桶策略: 只读，只写，读写，不设置(默不可读、写)
 }
