@@ -21,7 +21,7 @@ public class OSSBucketServiceTests {
     @Before
     public void init() {
         OSSClient ossClient = OSSClient.builder()
-                .endpoint("127.0.0.1", 9000, false)
+                .endpoint("192.168.1.40", 9000, false)
                 .credentials("username", "password")
                 .build();
         OSSBucketService bucketService = new OSSBucketService(ossClient);

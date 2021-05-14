@@ -1,5 +1,6 @@
 package com.dist.zja.oss;
 
+import com.dist.zja.oss.common.enums.DownloadModeEnum;
 import io.oss.ComposeSource;
 import io.oss.CopySource;
 import io.oss.StatObjectResponse;
@@ -29,7 +30,7 @@ public class OSSObjectServiceTests {
     @Before
     public void init() {
         OSSClient ossClient = OSSClient.builder()
-                .endpoint("127.0.0.1", 9000, false)
+                .endpoint("192.168.1.40", 9000, false)
                 .credentials("username", "password")
                 .build();
         OSSObjectService objectService = new OSSObjectService(ossClient);
@@ -109,7 +110,7 @@ public class OSSObjectServiceTests {
     public void test8() throws Exception {
         //获取对象文件夹
         //获取对象文件夹下的所有文件对象
-        List<Item> objectFolder = ossObjectService.getObjectFolder("mybucket", "aaa");
+        List<Item> objectFolder = ossObjectService.getObjectFolder("mybucket", "文件夹");
         for (Item item : objectFolder) {
             System.out.println(item.objectName());
         }
@@ -120,6 +121,24 @@ public class OSSObjectServiceTests {
         //复制文件夹
         //复制已有的一个文件夹(递归复制文件对象)
         ossObjectService.copyObjectFolder("mybucket1", "bbb",new CopySourceFolder("mybucket","aaa"));
+    }
+
+    @Test
+    public void test82() throws Exception {
+        OSSClient client = OSSClient.builder()
+                .endpoint("192.168.1.40", 9000, false)
+                .credentials("username", "password")
+                .build();
+
+        //下载文件夹
+        List<Item> objectFolder = ossObjectService.getObjectFolder("mybucket", "文件夹");
+        Map<String, String> objectAndBucket = new HashMap<>();
+//        List<String> objectNames = new ArrayList<>();
+        for (Item item : objectFolder) {
+//            objectNames.add(item.objectName());
+            objectAndBucket.put(item.objectName(), "mybucket");
+        }
+        OssUtils.localBatchDownLoadOssFile(client, objectAndBucket, DownloadModeEnum.MERGE_DOWNLOAD, "D://cc//aa.zip");
     }
 
     @Test

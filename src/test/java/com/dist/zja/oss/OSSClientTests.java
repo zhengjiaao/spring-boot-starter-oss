@@ -34,7 +34,7 @@ public class OSSClientTests {
     public void init() {
         //手动创建客户端
         OSSClient client = OSSClient.builder()
-                .endpoint("127.0.0.1", 9000, false)
+                .endpoint("192.168.1.40", 9000, false)
                 .credentials("username", "password")
                 .build();
         this.ossClient = client;

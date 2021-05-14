@@ -3,6 +3,7 @@ package com.dist.zja.oss;
 import com.dist.zja.oss.common.annotations.ClassComment;
 import com.dist.zja.oss.common.annotations.MethodComment;
 import com.dist.zja.oss.common.annotations.Param;
+import com.dist.zja.oss.common.enums.DownloadModeEnum;
 import com.dist.zja.oss.common.utils.ZxingOrCodeUtils;
 import com.google.common.io.ByteStreams;
 import com.google.zxing.BarcodeFormat;
@@ -11,7 +12,10 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.common.BitMatrix;
 import io.oss.*;
 import io.oss.http.Method;
-import io.oss.messages.*;
+import io.oss.messages.DeleteError;
+import io.oss.messages.DeleteObject;
+import io.oss.messages.Item;
+import io.oss.messages.Tags;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
@@ -21,7 +25,10 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -402,6 +409,40 @@ public class OSSObjectService {
                 .object(objectName)
                 .filename(filePath)
                 .build());
+    }
+
+ /*   @MethodComment(
+            function = "指定桶-下载对象文件夹-下载到本服务器",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "folderName", description = "存储桶里的对象文件夹"),
+                    @Param(name = "filePath", description = "文件本地存储位置")
+            }, description = "下载并将文件夹保存到本地")
+    public void downloadObjectFolder(String bucketName, String folderName, String filePath) throws Exception {
+        List<Item> objectFolder = this.getObjectFolder(bucketName, folderName);
+        List<String> objectNames = new ArrayList<>();
+        for (Item item : objectFolder) {
+            objectNames.add(item.objectName());
+        }
+        OssUtils.batchDownLoadOssFile(ossClient,bucketName,objectNames,"folder",);
+    }*/
+
+    @MethodComment(
+            function = "指定桶-Http远程下载对象文件夹-zip",
+            params = {
+                    @Param(name = "bucketName", description = "桶名"),
+                    @Param(name = "folderName", description = "存储桶里的对象文件夹"),
+                    @Param(name = "response", description = "HttpServletResponse 存储 zip格式文件")
+            }, description = "Http远程下载对象文件夹,将所有对象封装到zip文件中进行下载")
+    public void downloadObjectFolder(String bucketName, String folderName, DownloadModeEnum modeEnum, HttpServletResponse response) throws Exception {
+        List<Item> objectFolder = this.getObjectFolder(bucketName, folderName);
+        Map<String, String> objectAndBucket = new HashMap<>();
+//        List<String> objectNames = new ArrayList<>();
+        for (Item item : objectFolder) {
+//            objectNames.add(item.objectName());
+            objectAndBucket.put(item.objectName(), bucketName);
+        }
+        OssUtils.remoteBatchDownLoadOssFile(ossClient, objectAndBucket, modeEnum, response);
     }
 
     @MethodComment(
