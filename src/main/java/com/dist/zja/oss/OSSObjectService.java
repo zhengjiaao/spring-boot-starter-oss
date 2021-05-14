@@ -411,21 +411,43 @@ public class OSSObjectService {
                 .build());
     }
 
- /*   @MethodComment(
-            function = "指定桶-下载对象文件夹-下载到本服务器",
+    @MethodComment(
+            function = "默认桶-本地下载对象文件夹-zip",
+            params = {
+                    @Param(name = "folderName", description = "存储桶里的对象文件夹"),
+                    @Param(name = "modeEnum", description = "下载模式"),
+                    @Param(name = "zipFilePath", description = "zipFilePath Must start with '.zip' end")
+            }, description = "本地批量下载OSS文件-并打成zip")
+    public void downloadObjectFolder(String folderName, DownloadModeEnum modeEnum, String zipFilePath) throws Exception {
+        downloadObjectFolder(defaultBucket, folderName, modeEnum, zipFilePath);
+    }
+
+    @MethodComment(
+            function = "指定桶-本地下载对象文件夹-zip",
             params = {
                     @Param(name = "bucketName", description = "桶名"),
                     @Param(name = "folderName", description = "存储桶里的对象文件夹"),
-                    @Param(name = "filePath", description = "文件本地存储位置")
-            }, description = "下载并将文件夹保存到本地")
-    public void downloadObjectFolder(String bucketName, String folderName, String filePath) throws Exception {
+                    @Param(name = "modeEnum", description = "下载模式"),
+                    @Param(name = "zipFilePath", description = "zipFilePath Must start with '.zip' end")
+            }, description = "本地批量下载OSS文件-并打成zip")
+    public void downloadObjectFolder(String bucketName, String folderName, DownloadModeEnum modeEnum, String zipFilePath) throws Exception {
         List<Item> objectFolder = this.getObjectFolder(bucketName, folderName);
-        List<String> objectNames = new ArrayList<>();
+        Map<String, String> objectAndBucket = new HashMap<>();
         for (Item item : objectFolder) {
-            objectNames.add(item.objectName());
+            objectAndBucket.put(item.objectName(), bucketName);
         }
-        OssUtils.batchDownLoadOssFile(ossClient,bucketName,objectNames,"folder",);
-    }*/
+        OssUtils.localBatchDownLoadOssFile(ossClient, objectAndBucket, modeEnum, zipFilePath);
+    }
+
+    @MethodComment(
+            function = "指定桶-Http远程下载对象文件夹-zip",
+            params = {
+                    @Param(name = "folderName", description = "存储桶里的对象文件夹"),
+                    @Param(name = "response", description = "HttpServletResponse 存储 zip格式文件")
+            }, description = "Http远程下载对象文件夹,将所有对象封装到zip文件中进行下载")
+    public void downloadObjectFolder(String folderName, DownloadModeEnum modeEnum, HttpServletResponse response) throws Exception {
+        downloadObjectFolder(defaultBucket, folderName, modeEnum, response);
+    }
 
     @MethodComment(
             function = "指定桶-Http远程下载对象文件夹-zip",
@@ -437,9 +459,7 @@ public class OSSObjectService {
     public void downloadObjectFolder(String bucketName, String folderName, DownloadModeEnum modeEnum, HttpServletResponse response) throws Exception {
         List<Item> objectFolder = this.getObjectFolder(bucketName, folderName);
         Map<String, String> objectAndBucket = new HashMap<>();
-//        List<String> objectNames = new ArrayList<>();
         for (Item item : objectFolder) {
-//            objectNames.add(item.objectName());
             objectAndBucket.put(item.objectName(), bucketName);
         }
         OssUtils.remoteBatchDownLoadOssFile(ossClient, objectAndBucket, modeEnum, response);

@@ -125,20 +125,20 @@ public class OSSObjectServiceTests {
 
     @Test
     public void test82() throws Exception {
-        OSSClient client = OSSClient.builder()
+        //下载文件夹 zip 生成格式文件
+        ossObjectService.downloadObjectFolder("mybucket","文件夹", DownloadModeEnum.NONE,"D://cc//aa.zip");
+
+        //不同桶下的对象,合并生成新的zip
+        /*OSSClient client = OSSClient.builder()
                 .endpoint("192.168.1.40", 9000, false)
                 .credentials("username", "password")
                 .build();
 
-        //下载文件夹
-        List<Item> objectFolder = ossObjectService.getObjectFolder("mybucket", "文件夹");
-        Map<String, String> objectAndBucket = new HashMap<>();
-//        List<String> objectNames = new ArrayList<>();
-        for (Item item : objectFolder) {
-//            objectNames.add(item.objectName());
-            objectAndBucket.put(item.objectName(), "mybucket");
-        }
-        OssUtils.localBatchDownLoadOssFile(client, objectAndBucket, DownloadModeEnum.MERGE_DOWNLOAD, "D://cc//aa.zip");
+        Map<String,String> objectAndBucket = new HashMap<>();
+        objectAndBucket.put("文件夹/img-3840x2160.jpg","mybucket");
+        objectAndBucket.put("db.zip","mybucket2");
+
+        OssUtils.localBatchDownLoadOssFile(client, objectAndBucket, DownloadModeEnum.NONE, "D://cc//bbb.zip");*/
     }
 
     @Test
